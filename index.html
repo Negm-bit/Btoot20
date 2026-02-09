@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>Private Website</title>
+  <style>
+    body {
+      font-family: 'Cairo', Arial, sans-serif;
+      background: linear-gradient(135deg, #120016, #2b0033);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+
+    h2, h3 {color:#ffb3c6}
+
+    .login, .site {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      padding: 30px;
+      border-radius: 20px;
+      width: 360px;
+      box-shadow: 0 0 40px rgba(255,77,109,.35);
+      backdrop-filter: blur(10px);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    textarea {resize:none}
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(45deg,#ff4d6d,#ff85a1);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    button:hover {transform: scale(1.03)}
+
+    .site {padding: 20px}
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .profile img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ff4d6d;
+    }
+
+    .box {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 20px;
+      margin-top: 25px;
+      box-shadow: 0 0 25px rgba(0,0,0,.3);
+    }
+
+    .media img, .media video {
+      max-width: 100%;
+      border-radius: 15px;
+      margin-top: 10px;
+      box-shadow: 0 0 20px rgba(255,77,109,.4);
+    }
+
+    audio {width:100%; margin-top:10px}
+  </style>
+</head>
+<body>
+
+<div class="login" id="login">
+  <div class="card">
+    <h2>تسجيل الدخول</h2>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button onclick="handleLogin()">دخول</button>
+  </div>
+</div>
+
+<div class="site" id="site">
+  <h2 id="welcome"></h2>
+
+  <div class="profile box">
+    <img id="profileImg" src="" alt="Profile">
+    <input type="file" accept="image/*" onchange="loadProfile(event)">
+  </div>
+
+  <div class="box">
+    <h3>عداد تاريخ</h3>
+    <input type="date" id="dateInput" onchange="calcDays()">
+    <p id="counter"></p>
+  </div>
+
+  <div class="box media">
+    <h3>إضافة صورة / فيديو</h3>
+    <input type="file" accept="image/*,video/*" onchange="loadMedia(event)">
+    <textarea id="caption" placeholder="اكتب كابشن"></textarea>
+    <div id="mediaView"></div>
+    <p id="cap"></p>
+  </div>
+
+  <div class="box">
+    <h3>إضافة أغنية</h3>
+    <input type="file" accept="audio/*" onchange="loadAudio(event)">
+    <audio id="audio" controls></audio>
+  </div>
+
+  <div class="box">
+    <h3>تواريخ تذكارية</h3>
+    <textarea id="memDates" placeholder="مثال: 1/1/2024 - أول يوم"></textarea>
+  </div>
+</div>
+
+<script>
+  const USERNAME = "admin";
+  const PASSWORD = "1234";
+
+  document.getElementById('login').style.display = 'flex';
+
+  function handleLogin() {
+    const u = document.getElementById('user').value;
+    const p = document.getElementById('pass').value;
+
+    if (u === USERNAME && p === PASSWORD) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('site').style.display = 'block';
+      document.getElementById('welcome').innerText = `أهلاً ${u}`;
+    } else {
+      alert('بيانات غلط');
+    }
+  }
+
+  function loadProfile(e) {
+    document.getElementById('profileImg').src = URL.createObjectURL(e.target.files[0]);
+  }
+
+  function calcDays() {
+    const d = new Date(document.getElementById('dateInput').value);
+    const now = new Date();
+    const diff = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+    document.getElementById('counter').innerText = `عدّى ${diff} يوم`;
+  }
+
+  function loadMedia(e) {
+    const file = e.target.files[0];
+    const mediaView = document.getElementById('mediaView');
+    const caption = document.getElementById('caption').value;
+
+    mediaView.innerHTML = '';
+
+    if (file.type.startsWith('image')) {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      mediaView.appendChild(img);
+    } else {
+      const vid = document.createElement('video');
+      vid.src = URL.createObjectURL(file);
+      vid.controls = true;
+      mediaView.appendChild(vid);
+    }
+
+    document.getElementById('cap').innerText = caption;
+  }
+
+  function loadAudio(e) {
+    document.getElementById('audio').src = URL.createObjectURL(e.target.files[0]);
+  }
+</script>
+
+</body>
+</html>
